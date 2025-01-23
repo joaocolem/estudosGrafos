@@ -10,21 +10,18 @@ class GraphView:
         self.is_eulerian = is_eulerian
         self.vertex_degrees = vertex_degrees
         self.is_complete = is_complete
-        self.components = components  # Adicionando componentes como parâmetro
+        self.components = components  
 
     def plot_graph(self):
         net = Network(notebook=True)
 
-        # Gerar cores distintas para cada componente
         colors = self.generate_colors(len(self.components))
 
-        # Criar um dicionário para mapear os nós aos seus componentes
         node_to_component = {}
         for i, component in enumerate(self.components):
             for node in component:
-                node_to_component[node] = i  # Atribuir o índice do componente ao nó
+                node_to_component[node] = i  
 
-        # Adicionando nós ao gráfico com a cor do componente
         for node in self.graph.graph:
             component_id = node_to_component.get(node, -1)
             net.add_node(
@@ -32,12 +29,11 @@ class GraphView:
                 label=str(node),
                 shape="circle",
                 font={"size": 20, "color": "black"},
-                color=colors[component_id] if component_id >= 0 else "#97C2FC"  # Usando a cor do componente
+                color=colors[component_id] if component_id >= 0 else "#97C2FC"  
             )
 
         edge_count = defaultdict(int)
 
-        # Adicionando as arestas ao gráfico
         for edge in self.graph.edges:
             if len(edge) == 2:
                 u, v = edge
@@ -46,22 +42,19 @@ class GraphView:
         for (u, v), count in edge_count.items():
             net.add_edge(u, v)
 
-            # Criando nós intermediários
             for i in range(1, count):
                 intermediate_node = f"{u}-{v}-int-{i}"
                 net.add_node(
                     intermediate_node,
                     size=0,
                     color="#FFCC00",
-                    label=""  # Não mostrar o nome do nó intermediário
+                    label=""  
                 )
                 net.add_edge(u, intermediate_node)
                 net.add_edge(v, intermediate_node)
 
-        # Gerar o HTML com a configuração do gráfico
         net.show("grafo_interativo_completos.html")
 
-        # Exibindo as informações do grafo no canto superior esquerdo
         with open("grafo_interativo_completos.html", "a", encoding="utf-8") as f:
             f.write(f"""
             <meta charset="UTF-8">
@@ -90,8 +83,18 @@ class GraphView:
             </div>
             <script type="text/javascript">
                 var network = new vis.Network(container, data, options);
+
+                // Adicionando evento de clique no nó
+                network.on("click", function(params) {{
+                    if (params.nodes.length > 0) {{
+                        var nodeId = params.nodes[0];  // ID do nó clicado
+                        console.log("Nó clicado: " + nodeId);
+                    }}
+                }});
             </script>
             """)
+
+        # Abre automaticamente o HTML gerado
         webbrowser.open("grafo_interativo_completos.html")
 
     def generate_colors(self, num_components):

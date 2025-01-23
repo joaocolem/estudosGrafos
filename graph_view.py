@@ -1,6 +1,7 @@
 from pyvis.network import Network
 from collections import defaultdict
 import random
+import webbrowser
 
 class GraphView:
     def __init__(self, graph, num_components, is_eulerian, vertex_degrees, is_complete, components):
@@ -91,6 +92,7 @@ class GraphView:
                 var network = new vis.Network(container, data, options);
             </script>
             """)
+        webbrowser.open("grafo_interativo_completos.html")
 
     def generate_colors(self, num_components):
         """

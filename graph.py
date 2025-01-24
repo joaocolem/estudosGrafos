@@ -2,6 +2,9 @@ from collections import defaultdict
 
 class Graph:
     def __init__(self, edges):
+        if not self.is_valid_graph(edges):
+            raise ValueError("A entrada fornecida não representa um grafo válido.")
+
         self.edges = edges
         self.normalize_edges()
         self.graph = defaultdict(list)
@@ -25,6 +28,34 @@ class Graph:
     def normalize_edges(self):
         """Ordena os vértices de cada aresta para garantir consistência."""
         self.edges = [sorted(edge) for edge in self.edges if len(edge) == 2]
+
+    @staticmethod
+    def is_valid_graph(edges):
+        """Valida se a entrada representa um grafo genérico usando o Teorema de Handshaking."""
+        if len(edges) == 0:
+            return False
+        
+        vertex_degrees = defaultdict(int)
+        num_edges = 0
+
+        for edge in edges:
+            if len(edge) == 2:
+                u, v = edge
+                vertex_degrees[u] += 1
+                vertex_degrees[v] += 1
+                num_edges += 1
+            elif len(edge) == 1:
+                u = edge[0]
+                vertex_degrees[u] += 0
+            else:
+                return False
+
+        total_degrees = sum(vertex_degrees.values())
+        if total_degrees != 2 * num_edges:
+            return False  
+
+        return True
+
 
     def dfs(self, node, visited, component):
         stack = [node]
@@ -68,12 +99,11 @@ class Graph:
             print(f"Vértice {node} tem {degree} conexão(ões).")
             
     def get_vertex_degrees(self):
-        vertex_degrees = {}  # Dicionário para armazenar os graus dos vértices
+        vertex_degrees = {}  
         for node in self.graph:
             degree = len(self.graph[node])
-            vertex_degrees[node] = degree  # Armazenando o grau do vértice
-        return vertex_degrees  # Retorna o dicionário com os graus
-
+            vertex_degrees[node] = degree  
+        return vertex_degrees  
 
     def is_complete(self):
         n = len(self.graph)

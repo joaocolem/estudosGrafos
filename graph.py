@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import defaultdict, deque
 
 class Graph:
     def __init__(self, edges):
@@ -110,4 +110,51 @@ class Graph:
         for node in self.graph:
             if len(self.graph[node]) != n - 1:
                 return False
+        return True
+
+    def has_cycle(self):
+            visited = set()
+            
+            def dfs(node, parent):
+                visited.add(node)
+                for neighbor in self.graph[node]:
+                    if neighbor not in visited:
+                        if dfs(neighbor, node):
+                            return True
+                    elif neighbor != parent:
+                        return True
+                return False
+            
+            for node in self.graph:
+                if node not in visited:
+                    if dfs(node, None):
+                        return True
+            
+            return False
+        
+        
+    def bfs_check_bipartite(self, start):
+        """Verifica se o grafo é bipartido usando BFS a partir de um vértice inicial."""
+        color = {}
+        queue = deque([start])
+        color[start] = 0 
+
+        while queue:
+            node = queue.popleft()
+
+            for neighbor in self.graph[node]:
+                if neighbor not in color:
+                    color[neighbor] = 1 - color[node]
+                    queue.append(neighbor)
+                elif color[neighbor] == color[node]:
+                    return False
+        return True
+
+    def is_bipartite(self):
+        """Verifica se o grafo é bipartido percorrendo todas as componentes conexas."""
+        color = {}
+        for node in self.graph:
+            if node not in color:
+                if not self.bfs_check_bipartite(node):
+                    return False
         return True

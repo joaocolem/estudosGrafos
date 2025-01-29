@@ -14,8 +14,11 @@ class Main:
         is_eulerian = graph.is_eulerian()
         vertex_degrees = graph.get_vertex_degrees() 
         is_complete = graph.is_complete()
-
-        view = GraphView(graph, num_components, is_eulerian, vertex_degrees, is_complete, components)
+        has_cycle = graph.has_cycle()
+        is_bipartite = graph.is_bipartite()
+        
+        
+        view = GraphView(graph, num_components, is_eulerian, vertex_degrees, is_complete, has_cycle, is_bipartite, components)
         view.plot_graph()
 
 

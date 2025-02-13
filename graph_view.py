@@ -4,7 +4,7 @@ import random
 import webbrowser
 
 class GraphView:
-    def __init__(self, graph, num_components, is_eulerian, vertex_degrees, is_complete, has_cycle, is_bipartite, components):
+    def __init__(self, graph, num_components, is_eulerian, vertex_degrees, is_complete, has_cycle, is_bipartite, has_closed_path, components):
         self.graph = graph
         self.num_components = num_components
         self.is_eulerian = is_eulerian
@@ -12,7 +12,8 @@ class GraphView:
         self.is_complete = is_complete
         self.components = components
         self.has_cycle = has_cycle 
-        self.is_bipartite = is_bipartite  
+        self.is_bipartite = is_bipartite 
+        self.has_closed_path = has_closed_path 
          
 
     def plot_graph(self):
@@ -81,6 +82,8 @@ class GraphView:
                 <p><strong>O grafo é completo?</strong> {self.is_complete}</p>
                 <p><strong>O grafo tem ciclo?</strong> {self.has_cycle}</p>
                 <p><strong>O grafo é bipartido?</strong> {self.is_bipartite}</p>
+                <p><strong>Tem caminho fechado?</strong> {self.has_closed_path}</p>
+                
                 
                 
                 <p><strong>Graus dos vértices:</strong></p>

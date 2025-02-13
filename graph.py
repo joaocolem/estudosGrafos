@@ -88,3 +88,64 @@ class Graph:
         degrees = self.get_vertex_degrees()
         odd_count = sum(1 for degree in degrees.values() if degree % 2 != 0)
         return odd_count == 0
+
+    def has_closed_path(self):
+        """
+        Verifica se o grafo possui um caminho fechado (ciclo simples).
+        """
+        visited = set()
+
+        def dfs(node, parent):
+            visited.add(node)
+            for neighbor in self.graph[node]:
+                if neighbor not in visited:
+                    if dfs(neighbor, node):
+                        return True
+                elif neighbor != parent:
+                    return True
+            return False
+
+        for node in self.graph:
+            if node not in visited:
+                if dfs(node, None):
+                    return True
+        return False
+
+    def are_isomorphic(graph_a, graph_b):
+        """
+        Verifica se dois grafos são isomorfos.
+        
+        :param graph_a: Instância da classe Graph representando o primeiro grafo.
+        :param graph_b: Instância da classe Graph representando o segundo grafo.
+        :return: True se os grafos forem isomorfos, False caso contrário.
+        """
+        # Verifica se os números de vértices e arestas são iguais
+        if len(graph_a.graph) != len(graph_b.graph) or len(graph_a.edges) != len(graph_b.edges):
+            return False
+
+        # Obtém os graus dos vértices de ambos os grafos
+        degrees_a = sorted([len(neighbors) for neighbors in graph_a.graph.values()])
+        degrees_b = sorted([len(neighbors) for neighbors in graph_b.graph.values()])
+
+        # Se os graus não forem iguais, os grafos não são isomorfos
+        if degrees_a != degrees_b:
+            return False
+
+        # Para casos mais complexos, podemos usar permutações dos vértices
+        # Aqui usamos uma abordagem simplificada
+        def adjacency_list(graph):
+            return {node: sorted(list(neighbors)) for node, neighbors in graph.graph.items()}
+
+        adj_a = adjacency_list(graph_a)
+        adj_b = adjacency_list(graph_b)
+
+        # Tenta mapear os nós de A para os nós de B
+        for permutation in permutations(adj_b.keys()):
+            mapping = dict(zip(adj_a.keys(), permutation))
+            if all(
+                sorted([mapping[neighbor] for neighbor in adj_a[node]]) == sorted(adj_b[mapping[node]])
+                for node in adj_a
+            ):
+                return True
+
+        return False
